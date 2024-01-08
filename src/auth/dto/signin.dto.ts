@@ -1,17 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
+import { IsEmail, IsNotEmpty } from 'class-validator';
+import { User } from 'src/users/entities/user.entity';
 
-export class SignInDto {
+export class SignInReqDto {
   @IsNotEmpty()
   @IsEmail()
   @ApiProperty()
   email: string;
 
   @IsNotEmpty()
-  @Matches(
-    /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/,
-    { message: 'Weak password' },
-  )
   @ApiProperty()
   password: string;
+}
+
+export class SignInResDto {
+  user: User;
+  token: string;
 }
