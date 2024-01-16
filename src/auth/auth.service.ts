@@ -77,7 +77,7 @@ export class AuthService {
     const { email } = forgotPasswordReq;
     const payload = { email };
     const resetToken = await this.jwtService.signAsync(payload, {
-      expiresIn: '1h',
+      expiresIn: '7d',
     });
 
     // TODO: integrate EmailService

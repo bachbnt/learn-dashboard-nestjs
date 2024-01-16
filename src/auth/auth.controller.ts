@@ -23,14 +23,14 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Public()
-  @Post('login')
+  @Post('sign-in')
   signIn(@Body() signInReq: SignInReqDto) {
     return this.authService.signIn(signInReq);
   }
 
   @Public()
   @HttpCode(HttpStatus.CREATED)
-  @Post('register')
+  @Post('sign-up')
   signUp(@Body() signUpReq: SignUpReqDto) {
     return this.authService.signUp(signUpReq);
   }
