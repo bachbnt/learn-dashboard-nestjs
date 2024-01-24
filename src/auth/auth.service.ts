@@ -21,11 +21,13 @@ import {
   ChangePasswordResDto,
 } from './dto/change-password.dto';
 import { User } from 'src/users/entities/user.entity';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
+    private mailService: MailService,
     private jwtService: JwtService,
   ) {}
 
@@ -80,9 +82,9 @@ export class AuthService {
       expiresIn: '7d',
     });
 
-    // TODO: integrate EmailService
+    await this.mailService.sendResetPasswordEmail(email, resetToken);
     return {
-      message: `Reset password link sent to ${email}: /reset-password?token=${resetToken}`,
+      message: `Reset password link sent to ${email}`,
     };
   }
 

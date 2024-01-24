@@ -11,6 +11,19 @@ module.exports = function (options, webpack) {
         allowlist: ['webpack/hot/poll?100'],
       }),
     ],
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/,
+          use: 'ts-loader',
+          exclude: /node_modules/,
+        },
+        {
+          test: /\.hbs$/,
+          use: 'handlebars-loader',
+        },
+      ],
+    },
     plugins: [
       ...options.plugins,
       new webpack.HotModuleReplacementPlugin(),
