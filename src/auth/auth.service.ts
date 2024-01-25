@@ -20,15 +20,19 @@ import {
   ChangePasswordReqDto,
   ChangePasswordResDto,
 } from './dto/change-password.dto';
-import { User } from 'src/users/entities/user.entity';
 import { MailService } from 'src/mail/mail.service';
+import {
+  UpdateProfileReqDto,
+  UpdateProfileResDto,
+} from './dto/update-profile.dto';
+import { GetProfileResDto } from './dto/get-profile.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
-    private mailService: MailService,
-    private jwtService: JwtService,
+    private readonly usersService: UsersService,
+    private readonly mailService: MailService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async signIn(signInReq: SignInReqDto): Promise<SignInResDto> {
@@ -114,7 +118,7 @@ export class AuthService {
   }
 
   async changePassword(
-    user: User,
+    user: any,
     changePasswordReq: ChangePasswordReqDto,
   ): Promise<ChangePasswordResDto> {
     const { oldPassword, newPassword } = changePasswordReq;
@@ -127,11 +131,36 @@ export class AuthService {
     }
 
     const newHashedPassword = await bcrypt.hash(newPassword, saltOrRounds);
-    await this.usersService.update(user._id, {
+    await this.usersService.update(user.sub, {
       password: newHashedPassword,
     });
     return {
       message: 'Change password successfully',
+    };
+  }
+
+  async updateProfile(
+    user: any,
+    updateProfileReq: UpdateProfileReqDto,
+  ): Promise<UpdateProfileResDto> {
+    const { fullName } = updateProfileReq;
+    await this.usersService.update(user.sub, {
+      fullName,
+    });
+    return {
+      message: 'Update profile successfully',
+    };
+  }
+
+  async getProfile(user: any): Promise<GetProfileResDto> {
+    const _user = await this.usersService.findById(user.sub);
+    if (!_user) {
+      throw new UnauthorizedException(
+        `User with email ${user.email} not found`,
+      );
+    }
+    return {
+      user: plainToInstance(UserDto, _user),
     };
   }
 }

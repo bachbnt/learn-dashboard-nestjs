@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Put,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -16,6 +17,7 @@ import { SignUpReqDto } from './dto/sign-up.dto';
 import { ForgotPasswordReqDto } from './dto/forgot-password.dto';
 import { ResetPasswordReqDto } from './dto/reset-password.dto';
 import { ChangePasswordReqDto } from './dto/change-password.dto';
+import { UpdateProfileReqDto } from './dto/update-profile.dto';
 
 @Controller('auth')
 @UseGuards(AuthGuard)
@@ -47,7 +49,7 @@ export class AuthController {
     return this.authService.resetPassword(resetPasswordReq);
   }
 
-  @Post('change-password')
+  @Put('change-password')
   async changePassword(
     @Request() req,
     @Body() changePasswordReq: ChangePasswordReqDto,
@@ -55,8 +57,16 @@ export class AuthController {
     return this.authService.changePassword(req.user, changePasswordReq);
   }
 
+  @Put('update-profile')
+  async updateProfile(
+    @Request() req,
+    @Body() updateProfileReq: UpdateProfileReqDto,
+  ) {
+    return this.authService.updateProfile(req.user, updateProfileReq);
+  }
+
   @Get('profile')
   getProfile(@Request() req) {
-    return req.user;
+    return this.authService.getProfile(req.user);
   }
 }
